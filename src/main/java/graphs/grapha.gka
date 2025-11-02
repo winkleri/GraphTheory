@@ -1,0 +1,4 @@
+A -- A (LineA) : 1.0;
+A -- B (LineB) : 1.5;
+A -- C (LineC) : 2.3;
+B -- C (LineD) : 3.0;
