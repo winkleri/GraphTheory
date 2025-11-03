@@ -1,5 +1,6 @@
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.DefaultGraph;
 
 import java.util.ArrayList;
@@ -55,6 +56,22 @@ public class GraphGenerator {
                         n.getId()
                                 .equals(node));
     }
+
+    /**
+     * This method checks if the ID given by the user is in the graph.
+     * This method throws IllegalArgumenteExceptions if the parameters are null
+     * or the node is not found in the graph.
+     * @param g is the graph
+     * @param nodeID is the labelling of a node
+     * @return a String containing the NodeID
+     */
+    public String checkNodeID(Graph g, String nodeID) {
+        if (g == null || nodeID == null) throw new IllegalArgumentException("Given graph or NodeID is null");
+        Node node = g.getNode(nodeID);
+        if(node == null) throw new IllegalArgumentException("Node is not in Graph!");
+        return node.getId();
+    }
+
 
     /**
      * This method adds nodes, edges and edge weight to the current graph after checking the suitability.
