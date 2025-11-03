@@ -116,5 +116,17 @@ public class BreadthFirstSearch implements Algorithm {
         return path == null ? Collections.emptyList() : Collections.unmodifiableList(path);
     }
 
+    /**
+     * This method prints the shortest path.
+     * @return String of the shortest path.
+     */
+    public String printPath() {
+        StringBuilder sb = new StringBuilder();
+        for(Node n : path) {
+            sb.append("-").append(n.getId()).append("-");
+        }
+        int edgeAmount = path.size() - 1;
+        return "Shortest path: Source <-" + sb + "-> Target\nAmount of Edges: " + edgeAmount;
+    }
 
 }
