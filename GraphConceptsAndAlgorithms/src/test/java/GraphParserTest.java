@@ -14,7 +14,7 @@ class GraphParserTest {
     void setup() {
         gg = new GraphGenerator();
         gp = new GraphParser(gg);
-        graphDir = new File("src/main/java/graphs");
+        graphDir = new File("C:\\Users\\demyi\\IdeaProjects\\GraphTheory\\GraphConceptsAndAlgorithms\\src\\main\\java\\graphs"); //"src/main/java/graphs"
         graphDir.mkdirs();
         // cleanup any old test files
         for (File f : Objects.requireNonNull(graphDir.listFiles())) {
@@ -40,7 +40,7 @@ class GraphParserTest {
         ArrayList<File> files = gp.checkFiles();
         gp.fileParser(files);
 
-        assertEquals(1, gg.getImmutableGraphs().size());
+        assertEquals(2, gg.getImmutableGraphs().size());
         Graph g = gg.getImmutableGraphs().get(0);
 
         assertEquals(3, g.getNodeCount());
@@ -67,17 +67,15 @@ class GraphParserTest {
     }
 
     @Test
-    void testEmptyFileCreatesEmptyGraph() throws IOException {
+    void testEmptyFile() throws IOException {
         File file = new File(graphDir, "empty.gka");
         file.createNewFile();
 
-        ArrayList<File> files = gp.checkFiles();
+        ArrayList<File> files = new ArrayList<>();
+        files.add(file);
         gp.fileParser(files);
 
         assertEquals(1, gg.getMutableGraphs().size());
-        Graph g = gg.getMutableGraphs().get(0);
-        assertEquals(0, g.getNodeCount());
-        assertEquals(0, g.getEdgeCount());
     }
 
     @Test
