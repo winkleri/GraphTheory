@@ -58,22 +58,6 @@ public class GraphGenerator {
     }
 
     /**
-     * This method checks if the ID given by the user is in the graph.
-     * This method throws IllegalArgumenteExceptions if the parameters are null
-     * or the node is not found in the graph.
-     * @param g is the graph
-     * @param nodeID is the labelling of a node
-     * @return a String containing the NodeID
-     */
-    public String checkNodeID(Graph g, String nodeID) {
-        if (g == null || nodeID == null) throw new IllegalArgumentException("Given graph or NodeID is null");
-        Node node = g.getNode(nodeID);
-        if(node == null) throw new IllegalArgumentException("Node is not in Graph!");
-        return node.getId();
-    }
-
-
-    /**
      * This method adds nodes, edges and edge weight to the current graph after checking the suitability.
      *
      * @param g          is the current graph.
@@ -83,19 +67,19 @@ public class GraphGenerator {
      * @param edgeWeight is an integer value associated with an edge.
      */
     public void updateGraph(Graph g, String source, String target, String directed, String edgeLabel, Integer edgeWeight) {
-        //check if source exists
-        if (!containsNodeId(g, source)) {
-            g.addNode(source);
-            g.getNode(source).setAttribute("ui.label", source);
+        //generate source
+        generateNode(g, source);
+        //generate target
+        generateNode(g, target);
+        //generate edge
+        generateEdge(g, source, target, directed, edgeLabel, edgeWeight);
+    }
+
+    public void generateNode(Graph g, String name) {
+        if (!containsNodeId(g, name)) {
+            g.addNode(name);
+            g.getNode(name).setAttribute("ui.label", name);
         }
-        //check if target exists
-        if (!containsNodeId(g, target)) {
-            g.addNode(target);
-            g.getNode(target).setAttribute("ui.label", target);
-        }
-        //edge
-        String edgeName = source + directed + target;
-        generateEdge(g, edgeName, source, target, directed, edgeLabel, edgeWeight);
     }
 
     /**
@@ -109,12 +93,12 @@ public class GraphGenerator {
      * @param edgeLabel  a custom name for an edge
      * @param edgeWeight integer value storing an edge weight
      */
-    public void generateEdge(Graph g, String name, String source, String target, String directed, String edgeLabel, Integer edgeWeight) {
+    public void generateEdge(Graph g, String source, String target, String directed, String edgeLabel, Integer edgeWeight) {
         //don't generate duplicates
-        String edgeId1 = source + directed + target;
-        String edgeId2 = target + directed + source;
+        String name = source + directed + target;
+        String reversed = target + directed + source;
 
-        if (g.getEdge(edgeId2) != null || g.getEdge(edgeId1) != null) {
+        if (g.getEdge(name) != null || g.getEdge(reversed)!= null) {
             System.out.printf("Skipped: s=%s %s t=%s (duplicate edge)\n", source, directed, target);
             return;
         }
@@ -124,6 +108,14 @@ public class GraphGenerator {
         currentEdge.setAttribute("ui.label", name);
         if (edgeWeight != null) currentEdge.setAttribute("weight", edgeWeight);
         if (edgeLabel != null) currentEdge.setAttribute("label", edgeLabel);
+    }
+
+    /**
+     * @param graph
+     * @return true if graph is empty
+     */
+    public boolean isEmpty(Graph graph) {
+        return graph.getNodeCount() == 0;
     }
 
     /**
