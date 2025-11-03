@@ -24,7 +24,7 @@ public class GraphParser {
      */
     public ArrayList<File> checkFiles() {
         ArrayList<File> files = new ArrayList<>();
-        File dir = new File("src/main/java/graphs");
+        File dir = new File("src/main/java/graphs"); //C:\Users\demyi\IdeaProjects\GraphTheory\GraphConceptsAndAlgorithms\src\main\java\graphs
         for (File f : Objects.requireNonNull(dir.listFiles())) {
             if (f.getName().endsWith(".gka")) files.add(f);
         }
@@ -116,6 +116,7 @@ public class GraphParser {
         }
         //mutable array list to expand this with each parsed file
         gg.getMutableGraphs().add(graph);
+        if(!gg.isEmpty(graph)) gg.getMutableGraphs().add(graph);
         return invalidFileContentFlag;
     }
 
