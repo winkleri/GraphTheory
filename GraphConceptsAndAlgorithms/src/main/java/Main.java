@@ -1,5 +1,6 @@
 import org.graphstream.graph.Graph;
 import org.graphstream.ui.view.Viewer;
+
 import java.awt.*;
 import java.util.Scanner;
 
@@ -15,8 +16,9 @@ public class Main {
 
     /**
      * This method handles the displaying of actual graphs via swing
+     *
      * @param num the position on the array list of the graph
-     * @param gg graph generator object
+     * @param gg  graph generator object
      */
     public static void UIHelper(int num, GraphGenerator gg) {
         System.setProperty("org.graphstream.ui", "swing");
@@ -31,13 +33,14 @@ public class Main {
     /**
      * This method handles user input and prints out a neat looking list of "ID - samplegraphfile.gka" as these are unordered
      * It also calls the helper method to initialize the window of the graph that is to be displayed
+     *
      * @param gg Graph generator object
      */
     public static void initializeTextBasedUI(GraphGenerator gg) {
         Scanner scanner = new Scanner(System.in);
-        System.out.printf("%d graphs found\n", gg.getMutableGraphs().size());
+        System.out.printf("%d graphs found\n", gg.getImmutableGraphs().size());
         for (int i = 0; i < gg.getImmutableGraphs().size(); i++) {
-            Graph g = gg.getMutableGraphs().get(i);
+            Graph g = gg.getImmutableGraphs().get(i);
             System.out.printf("\n %d - %s", i, g.getAttribute("sourceFile"));
         }
         System.out.println("\nEnter the number of the graph you want to display visually:\n");
