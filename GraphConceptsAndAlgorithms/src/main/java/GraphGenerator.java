@@ -1,24 +1,15 @@
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.DefaultGraph;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import java.io.FileNotFoundException;
-import org.graphstream.graph.implementations.DefaultGraph;
 
-//graph15.gka           NO
-//output_directed.gka   NO
-//graph12.gka           yes
-//output_undirected.gka NO...
-//graph09.gka
-//directed.gka
-//graph03.gka
-//undirected.gka
-//graph08.gka          ... NO
 
 public class GraphGenerator {
         private final String node = "([\\wöäü]+)";
@@ -30,15 +21,6 @@ public class GraphGenerator {
         //private final Pattern pattern = Pattern.compile("(\\p{L}0-9]+)\\s*(->|--)\\s*([\\p{L}0-9]+)(?:\\s*:\\s*(\\d+);)?");
         private final List<Graph> graphs = new ArrayList<>();
         private static int graphId = 0;
-
-        /* Regular Expression:
-        ^...$ line anchors ensure entire line matches
-        \s* account for whitespace
-        Group 1/3 - responsible for nodes:  [\\p{L}0-9] character set containing digits/letters from all languages
-        Group 2 - responsible for direction: ->|-- directed/undirected
-        Group 4 - responsible for edge weight (:\d+)? number as edge weight {0,1}
-        */
-
 
         /**
          * This method helps to extract files from a fixed directory (dir)
@@ -76,7 +58,7 @@ public class GraphGenerator {
             }
 
         /**
-         * This method helps to extract information from given .gka files, while using RegEX.
+         * This method helps to extract information from given .gka files, while using RegEX and subsequently passes them to a generator method
          * Strings are matched via the Pattern class.
          * @param files list of files to be parsed one by one
          */
@@ -100,13 +82,11 @@ public class GraphGenerator {
                         final Integer edgeWeight =  intParser(matcher.group(4));
                         System.out.printf("Parsed: %s %s %s weight=%s%n", source, directed, target, edgeWeight);
                         updateGraph(graph, source, target, directed, edgeWeight);
-
                     }
                 }
                 graphs.add(graph);
-
+                parser.close();
             }
-
         }
 
         /**
@@ -123,7 +103,7 @@ public class GraphGenerator {
         }
 
         /**
-         * This method adds nodes, edges and if applicable edge weight to the current graph.
+         * This method adds nodes, edges and edge weight to the current graph after checking the suitability.
          * @param g is the current graph.
          * @param source is the source node.
          * @param target is the target node.
@@ -146,16 +126,22 @@ public class GraphGenerator {
             generateEdge(g, edgeName, source, target, directed, edgeWeight);
         }
 
-
+        /**
+        * This method checks if the input is valid for generating an edge and if so generates it
+        * @param g graph to add edge to
+         * @param name name of generated edge
+         * @param source source
+         * @param target target node
+         * @param directed if edge is directed or not
+         * @param edgeWeight integer value storing an edge weight
+         */
         public void generateEdge(Graph g, String name, String source, String target, String directed, Integer edgeWeight) {
-
             if(!checkDirected(directed)) {
                 String edgeId1 = source + directed + target;
                 String edgeId2 = target + directed + source;
                 if(g.getEdge(edgeId2) != null || g.getEdge(edgeId1) !=null ) {
                     System.out.printf("\nSkipping duplicate edge: %s -- %s\n", source, target);
                 }
-                return;
             }
             g.addEdge(name, g.getNode(source), g.getNode(target), checkDirected(directed));
             Edge currentEdge = g.getEdge(name);
@@ -173,7 +159,7 @@ public class GraphGenerator {
         }
 
         /**
-         * This method parses Integers and treats unexpected behavior accordingly
+         * This method parses Integers. If none is found null is returned
          * @param input is the String that is to be parsed
          * @return returns the number or Null if the number does not exist
          * */

@@ -1,16 +1,37 @@
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.ui.view.Viewer;
-
 import java.awt.*;
 import java.util.Scanner;
 
 public class Main {
+    //Entry point
     static void main() {
-        System.setProperty("org.graphstream.ui", "swing");
         GraphGenerator gg = new GraphGenerator();
         gg.fileParser(gg.checkFiles());
+        initializeTextBasedUI(gg);
+    }
+
+    /**
+     * This method handles the displaying of actual graphs via swing
+     * @param num the position on the array list of the graph
+     * @param gg graph generator object
+     */
+    public static void UIHelper(int num, GraphGenerator gg) {
+        System.setProperty("org.graphstream.ui", "swing");
+        Graph current = gg.getGraphs().get(num);
+        String src = (String) current.getAttribute("sourceFile");
+        Viewer viewer = current.display();
+        viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);
+        javax.swing.JFrame frame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor((Component) viewer.getDefaultView());
+        frame.setTitle("Graph Viewer - " + src);
+    }
+
+    /**
+     * This method handles user input and prints out a neat looking list of "ID - samplegraphfile.gka" as these are unordered
+     * It also calls the helper method to initialize the window of the graph that is to be displayed
+     * @param gg Graph generator object
+     */
+    public static void initializeTextBasedUI(GraphGenerator gg) {
         Scanner scanner = new Scanner(System.in);
         System.out.printf("%d graphs found\n", gg.getGraphs().size());
         for (int i = 0; i < gg.getGraphs().size(); i++) {
@@ -18,18 +39,6 @@ public class Main {
             System.out.printf("\n %d - %s", i, g.getAttribute("sourceFile"));
         }
         System.out.println("\nEnter the graph you want to display visually:\n");
-        int num = Integer.parseInt(scanner.nextLine());
-
-        Graph current = gg.getGraphs().get(num);
-        String src = (String) current.getAttribute("sourceFile");
-        Viewer viewer = current.display();
-        viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);
-        javax.swing.JFrame frame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor((Component) viewer.getDefaultView());
-        frame.setTitle("Graph Viewer - " + src);
-
-    }
-
-    public static void uiHelper() {
-
+        UIHelper(Integer.parseInt(scanner.nextLine()), gg);
     }
 }
