@@ -7,7 +7,9 @@ public class Main {
     //Entry point
     static void main() {
         GraphGenerator gg = new GraphGenerator();
-        gg.fileParser(gg.checkFiles());
+        //Initialize parser with same generator instance
+        GraphParser gp = new GraphParser(gg);
+        gp.fileParser(gp.checkFiles());
         initializeTextBasedUI(gg);
     }
 
@@ -18,7 +20,7 @@ public class Main {
      */
     public static void UIHelper(int num, GraphGenerator gg) {
         System.setProperty("org.graphstream.ui", "swing");
-        Graph current = gg.getGraphs().get(num);
+        Graph current = gg.getImmutableGraphs().get(num);
         String src = (String) current.getAttribute("sourceFile");
         Viewer viewer = current.display();
         viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);
@@ -33,12 +35,14 @@ public class Main {
      */
     public static void initializeTextBasedUI(GraphGenerator gg) {
         Scanner scanner = new Scanner(System.in);
-        System.out.printf("%d graphs found\n", gg.getGraphs().size());
-        for (int i = 0; i < gg.getGraphs().size(); i++) {
-            Graph g = gg.getGraphs().get(i);
+        System.out.printf("%d graphs found\n", gg.getMutableGraphs().size());
+        for (int i = 0; i < gg.getImmutableGraphs().size(); i++) {
+            Graph g = gg.getMutableGraphs().get(i);
             System.out.printf("\n %d - %s", i, g.getAttribute("sourceFile"));
         }
-        System.out.println("\nEnter the graph you want to display visually:\n");
+        System.out.println("\nEnter the number of the graph you want to display visually:\n");
         UIHelper(Integer.parseInt(scanner.nextLine()), gg);
     }
+
+
 }
