@@ -40,7 +40,7 @@ class GraphParserTest {
         ArrayList<File> files = gp.checkFiles();
         gp.fileParser(files);
 
-        assertEquals(2, gg.getImmutableGraphs().size());
+        assertEquals(1, gg.getImmutableGraphs().size());
         Graph g = gg.getImmutableGraphs().get(0);
 
         assertEquals(3, g.getNodeCount());
@@ -75,7 +75,7 @@ class GraphParserTest {
         files.add(file);
         gp.fileParser(files);
 
-        assertEquals(1, gg.getMutableGraphs().size());
+        assertEquals(0, gg.getMutableGraphs().size());
     }
 
     @Test

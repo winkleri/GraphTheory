@@ -115,7 +115,6 @@ public class GraphParser {
             }
         }
         //mutable array list to expand this with each parsed file
-        gg.getMutableGraphs().add(graph);
         if(!gg.isEmpty(graph)) gg.getMutableGraphs().add(graph);
         return invalidFileContentFlag;
     }
