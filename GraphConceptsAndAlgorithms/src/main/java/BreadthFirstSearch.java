@@ -57,9 +57,13 @@ public class BreadthFirstSearch implements Algorithm {
         visitedNodes.add(source);
         queue.add(source);
         while(! (queue.isEmpty())) {
+            //extracting node from queue
             Node currentNode = queue.poll();
 
+            //When the current node equals the target node, the bfs algorithm is finished.
+            //The path is built and performance measurements are printed
             if (currentNode.equals(target)) {
+                //variable that stores the nodes that are part of thg shortest path
                 this.path = buildPath(parent, target);
 
                 long endTime = System.nanoTime();
@@ -73,9 +77,14 @@ public class BreadthFirstSearch implements Algorithm {
                 return;
             }
 
+            //This for-Loop iterates over a list that stores the neighbor node's.
+            //Every node has its own neighbor node
             for (Node neighbor : neighbors(currentNode)) {
+                //checking if the neighbor nodes are already in the set of elements that have
+                //been visited. If not then we add the neighbor to the visited nodes and map the neighbor node
+                //to the current Node.
                 if (! visitedNodes.contains(neighbor)) {
-                    visitedNodes.add(neighbor);
+                    visitedNodes.add(neighbor); //
                     parent.put(neighbor, currentNode);
                     queue.add(neighbor);
                 }
@@ -94,10 +103,12 @@ public class BreadthFirstSearch implements Algorithm {
     private static List<Node> buildPath(Map<Node, Node> parent, Node target) {
         List<Node> path = new LinkedList<>();
         Node current = target;
+        //iterating over the nodes in the map und updating the current node with the parent node
         while (current != null) {
             path.add(current);
             current = parent.get(current);
         }
+        //reversing the list because childNodes are being mapped on parents node
         Collections.reverse(path);
         return path;
     }
@@ -110,6 +121,7 @@ public class BreadthFirstSearch implements Algorithm {
     public List<Node> neighbors(Node currentNode) {
         List<Node> neighbors = new ArrayList<>();
 
+        //looping over the node degree to get each node's neighbors
         for(int i = 0; i < currentNode.getDegree(); i++) {
             Edge currentEdge = currentNode.getEdge(i);
             if(currentEdge.isDirected()) {
@@ -142,6 +154,7 @@ public class BreadthFirstSearch implements Algorithm {
      * @return an unmodifiable list of nodes forming the path
      */
     public List<Node> getPath() {
+        //For the Test class
         return path == null ? Collections.emptyList() : Collections.unmodifiableList(path);
     }
 
