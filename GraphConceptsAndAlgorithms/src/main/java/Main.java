@@ -10,6 +10,7 @@ public class Main {
     static void main() {
         //Initialize parser with same generator instance
         GraphParser gp = new GraphParser(gg);
+        //parse all files found in check files
         gp.fileParser(gp.checkFiles());
         initializeTextBasedUI();
     }
@@ -37,7 +38,10 @@ public class Main {
      * @param gg Graph generator object
      */
     public static void initializeTextBasedUI() {
+        //num of graphs
         System.out.printf("%d graphs found\n", gg.getImmutableGraphs().size());
+
+        //list graphs with source files
         for (int i = 0; i < gg.getImmutableGraphs().size(); i++) {
             Graph g = gg.getImmutableGraphs().get(i);
             System.out.printf("\n %d - %s", i, g.getAttribute("sourceFile"));
@@ -48,6 +52,8 @@ public class Main {
         System.out.println("\n\nPress 0 if you want to visualize a graph\nPress 1 if you want to use the BFS algorithm\n");
         String input = scanner.nextLine();
 
+
+        //workaround for user interface
         switch (input) {
             case "0":
                 System.out.println("\nEnter the number of the graph you want to display visually:\n");

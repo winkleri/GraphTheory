@@ -16,6 +16,7 @@ class GraphGeneratorTest {
 
     @Test
     void testCreateNewGraph() {
+        //create graph and check if null
         Graph g = gg.createNewGraph("sample.gka");
         assertNotNull(g);
         assertEquals("sample.gka", g.getAttribute("sourceFile"));
@@ -26,22 +27,26 @@ class GraphGeneratorTest {
     void testContainsNodeId() {
         Graph g = gg.createNewGraph("x.gka");
         g.addNode("A");
+        //positive and negative check inside nodeID check
         assertTrue(gg.containsNodeId(g, "A"));
         assertFalse(gg.containsNodeId(g, "B"));
     }
 
     @Test
-    void testUpdateGraph() {
+    void testUpdateGraphAddsInformation() {
+        //to update
         Graph g = gg.createNewGraph("test.gka");
         gg.updateGraph(g, "A", "B", "->", "edgeLabel1", 42);
 
+        //should exist and not be null
         Node a = g.getNode("A");
         Node b = g.getNode("B");
         Edge e = g.getEdge("A->B");
-
         assertNotNull(a);
         assertNotNull(b);
         assertNotNull(e);
+
+        //all specified attributes should be updated accordingly
         assertEquals("A->B", e.getAttribute("ui.label"));
         assertEquals(42, e.getAttribute("weight"));
         assertEquals("edgeLabel1", e.getAttribute("label"));
@@ -50,17 +55,21 @@ class GraphGeneratorTest {
 
     @Test
     void testDuplicateEdgeSkipped() {
+        //create duplicate edges
         Graph g = gg.createNewGraph("dup.gka");
         gg.updateGraph(g, "A", "B", "--", null, null);
         gg.updateGraph(g, "B", "A", "--", null, null); // should be skipped
 
         long edgeCount = g.edges().count();
+        //duplicate being skipped (only one edge updated)
         assertEquals(1, edgeCount);
     }
 
     @Test
-    void testCheckDirected() {
+    void testCheckDirectedMethod() {
+        //-> is a directed edge
         assertTrue(gg.checkDirected("->"));
+        //any other string is not a directed edge
         assertFalse(gg.checkDirected("--"));
         assertFalse(gg.checkDirected("invalid"));
     }

@@ -10,10 +10,16 @@ import java.util.regex.Pattern;
 
 public class GraphParser {
     private final GraphGenerator gg;
-    //private final Pattern pattern_bak = Pattern.compile("^([^\\s:;()]+)(?:\\s*(--|->)\\s*([^\\s:;()]+)(?:\\s*\\(([^)]+)\\))?(?:\\s*:\\s*(\\d+(?:\\.\\d+)?))?)?\\s*;?$");
+    private final File dir;
 
     public GraphParser(GraphGenerator gg) {
-        this.gg = gg;
+        //init parsed directory
+        this(gg, new File("C:\\Users\\demyi\\IdeaProjects\\GraphTheory\\GraphConceptsAndAlgorithms\\src\\main\\java\\graphs"));
+    }
+
+    public GraphParser(GraphGenerator gg, File dir) {
+        this.gg = Objects.requireNonNull(gg, "Graph needs to be not null");
+        this.dir = Objects.requireNonNull(dir, "Directory needs to be not null");
     }
 
     /**
@@ -23,8 +29,8 @@ public class GraphParser {
      * @return ArrayList of files ending with .gka in the specified path
      */
     public ArrayList<File> checkFiles() {
+        //check directory for files ending with .gka
         ArrayList<File> files = new ArrayList<>();
-        File dir = new File("C:\\Users\\demyi\\IdeaProjects\\GraphTheory\\GraphConceptsAndAlgorithms\\src\\main\\java\\graphs"); // src/main/java/graphs
         for (File f : Objects.requireNonNull(dir.listFiles())) {
             if (f.getName().endsWith(".gka")) files.add(f);
         }
@@ -39,6 +45,7 @@ public class GraphParser {
      * @returns the initialized scanner
      */
     private Scanner initializeScanner(File file) {
+        //initialize parser with file param
         Scanner parser = null;
         try {
             parser = new Scanner(file);
@@ -55,11 +62,12 @@ public class GraphParser {
      * @param files list of files to be parsed one by one
      */
     public void fileParser(ArrayList<File> files) {
+        //iterate over each file in file list
         for (File file : files) {
             String fileName = file.getName();
             boolean invalidFileContentFlag = true; //assume every file content is corrupted
             Scanner parser = initializeScanner(file);
-            if (parser == null) continue;
+            if (parser == null) continue; //skip incorrectly initialized parsers
             //skip file not found exceptions
             System.out.println("--------------");
             System.out.printf("Parsing: %s\n", fileName);
@@ -92,11 +100,15 @@ public class GraphParser {
         final String ws = "\\s*";
         final Pattern pattern = Pattern.compile("^" + node + ws + direction + ws + node + label + ws + weight + ws + ";?" + "$");
 
+        //create graph with filename
         Graph graph = gg.createNewGraph(fileName);
+
+        //while parses each line of document
         while (parser.hasNextLine()) {
             String line = parser.nextLine().trim();
-            //if(line.startsWith(" ")) continue;
             Matcher matcher = pattern.matcher(line);
+
+            //information extracted with groups
             if (matcher.matches()) {
                 invalidFileContentFlag = false; // at least one valid information found
                 final String source = matcher.group(1);
@@ -110,7 +122,7 @@ public class GraphParser {
                     //label and weight are nullable
                     gg.updateGraph(graph, source, target, directed, edgeLabel, edgeWeight);
                 }
-
+                //pretty print
                 parsePrintHelper(source, directed, target, edgeLabel, edgeWeight);
             }
         }

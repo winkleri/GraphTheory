@@ -37,6 +37,7 @@ public class GraphGenerator {
      */
 
     public Graph createNewGraph(String fileName) {
+        //unique identifier generated when graph is created
         ++graphId;
         Graph graph = new DefaultGraph("graph:" + graphId);
         graph.setAttribute("sourceFile", fileName);
@@ -76,6 +77,7 @@ public class GraphGenerator {
     }
 
     public void generateNode(Graph g, String name) {
+        //if nodeID is not found add it
         if (!containsNodeId(g, name)) {
             g.addNode(name);
             g.getNode(name).setAttribute("ui.label", name);
@@ -98,14 +100,18 @@ public class GraphGenerator {
         String name = source + directed + target;
         String reversed = target + directed + source;
 
+       //undirected duplicate checker
         if (g.getEdge(name) != null || g.getEdge(reversed)!= null) {
             System.out.printf("Skipped: s=%s %s t=%s (duplicate edge)\n", source, directed, target);
             return;
         }
 
+        //adds attributes in order: label, source, target, direction (bool)
         g.addEdge(name, g.getNode(source), g.getNode(target), checkDirected(directed));
         Edge currentEdge = g.getEdge(name);
         currentEdge.setAttribute("ui.label", name);
+
+        //add attributes if they exist
         if (edgeWeight != null) currentEdge.setAttribute("weight", edgeWeight);
         if (edgeLabel != null) currentEdge.setAttribute("label", edgeLabel);
     }
